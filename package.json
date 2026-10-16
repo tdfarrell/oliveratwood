@@ -1,0 +1,15 @@
+{
+  "name": "oliveratwood",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Serial fiction by Oliver Atwood",
+  "scripts": {
+    "start": "eleventy --serve",
+    "build": "eleventy"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.1.7",
+    "@11ty/eleventy-img": "^6.0.4"
+  },
+  "type": "module"
+}

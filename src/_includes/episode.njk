@@ -1,0 +1,80 @@
+---
+layout: base.njk
+bodyClass: reading
+---
+{% from "macros.njk" import cover as drawCover %}
+{% set parts = collections.episodes | forStory(story) %}
+{% set parent = collections.stories | storyBySlug(story) %}
+{% set color = parent | spineColor(collections.stories) if parent else "#C9531A" %}
+{% set idx = -1 %}
+{% for ep in parts %}{% if ep.url == page.url %}{% set idx = loop.index0 %}{% endif %}{% endfor %}
+{% set prev = parts[idx - 1] if idx > 0 else null %}
+{% set next = parts[idx + 1] if idx >= 0 and idx < parts.length - 1 else null %}
+
+<div class="progress" aria-hidden="true" style="--spine: {{ color }}"><span></span></div>
+
+<article class="wrap page-sheet" style="--spine: {{ color }}; --spine-ink: {{ color | inkOn }}">
+  <header class="chapter">
+    <a class="chapter__story" href="/stories/{{ story }}/">
+      {% if cover or (parent and parent.data.cover) %}
+      {{ drawCover(parent.data.title if parent else story, cover or parent.data.cover, color, "sm", alt="") }}
+      {% endif %}
+      <span>{{ parent.data.title if parent else story }}</span>
+    </a>
+    <span class="chapter__num" aria-hidden="true">{{ number | roman }}</span>
+    <p class="chapter__label">Part {{ number }}</p>
+    <h1 class="chapter__title">{{ title }}</h1>
+    <p class="chapter__meta">
+      <time datetime="{{ page.date | isoDate }}">{{ page.date | readableDate }}</time> · {{ content | readingTime }}
+    </p>
+  </header>
+
+  {% if previously and prev %}
+  <aside class="note"><span class="note__label">Previously</span> {{ previously }}</aside>
+  {% endif %}
+
+  <div class="prose prose--story">
+    {{ content | safe }}
+  </div>
+
+  <p class="end-mark">
+    {% if next %}⁂{% elif parent and parent.data.status == "Complete" %}The End{% else %}To be continued…{% endif %}
+  </p>
+
+  {% if authorNote %}
+  <aside class="note"><span class="note__label">A note from Oliver</span> {{ authorNote }}</aside>
+  {% endif %}
+
+  <nav class="pager" aria-label="Installments">
+    {% if prev %}
+    <a class="pager__link" href="{{ prev.url }}" rel="prev">
+      <span class="pager__dir">← Part {{ prev.data.number }}</span>
+      <span class="pager__title">{{ prev.data.title }}</span>
+    </a>
+    {% else %}<span></span>{% endif %}
+    {% if next %}
+    <a class="pager__link pager__link--next" href="{{ next.url }}" rel="next">
+      <span class="pager__dir">Part {{ next.data.number }} →</span>
+      <span class="pager__title">{{ next.data.title }}</span>
+    </a>
+    {% else %}
+    <a class="pager__link pager__link--next" href="/stories/{{ story }}/">
+      <span class="pager__dir">Contents →</span>
+      <span class="pager__title">{{ parent.data.title if parent else "All parts" }}</span>
+    </a>
+    {% endif %}
+  </nav>
+</article>
+
+<script>
+  (function () {
+    var bar = document.querySelector(".progress span");
+    if (!bar) return;
+    function update() {
+      var h = document.documentElement, max = h.scrollHeight - h.clientHeight;
+      bar.style.transform = "scaleX(" + (max > 0 ? h.scrollTop / max : 0) + ")";
+    }
+    document.addEventListener("scroll", update, { passive: true });
+    update();
+  })();
+</script>

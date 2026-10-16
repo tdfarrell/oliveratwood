@@ -1,0 +1,18 @@
+{% from "macros.njk" import cover as drawCover %}
+<ul class="series">
+  {% for s in collections.stories %}
+  {% set parts = collections.episodes | forStory(s.fileSlug) %}
+  <li>
+    <a class="series__card" href="{{ s.url }}">
+      {{ drawCover(s.data.title, s.data.cover, s | spineColor(collections.stories), "sm", alt="") }}
+      <span class="series__body">
+        <span class="series__meta">
+          {% if s.data.genre %}{{ s.data.genre }} · {% endif %}{{ s.data.status }} · {{ parts.length }} part{% if parts.length != 1 %}s{% endif %}
+        </span>
+        <span class="series__title">{{ s.data.title }}</span>
+        <span class="series__summary">{{ s.data.summary }}</span>
+      </span>
+    </a>
+  </li>
+  {% endfor %}
+</ul>

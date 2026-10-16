@@ -1,0 +1,64 @@
+---
+layout: base.njk
+---
+{% from "macros.njk" import cover as drawCover %}
+{% set parts = collections.episodes | forStory(page.fileSlug) %}
+{% set me = collections.stories | storyBySlug(page.fileSlug) %}
+{% set color = me | spineColor(collections.stories) if me else (spine or "#C9531A") %}
+
+<div class="band" style="--band: {{ color }}; --band-ink: {{ color | inkOn }}">
+  <section class="wrap band__inner">
+    <div class="band__cover">
+      {{ drawCover(title, cover, color, "md", status, genre or "Serial fiction", alt=("Cover of " + title)) }}
+    </div>
+    <div class="band__text">
+      <p class="kicker kicker--on-band">
+        {% if genre %}{{ genre }} · {% endif %}{{ status }}{% if schedule %} · {{ schedule }}{% endif %}
+      </p>
+      <h1 class="band__title">{{ title }}</h1>
+      {% if summary %}<p class="band__summary">{{ summary }}</p>{% endif %}
+      {% if parts.length %}
+      <div class="actions">
+        <a class="btn btn--on-band" href="{{ parts[0].url }}">Start at Part 1</a>
+        {% if parts.length > 1 %}
+        <a class="btn btn--outline-on-band" href="{{ (parts | last).url }}">Latest: Part {{ (parts | last).data.number }}</a>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+  </section>
+</div>
+
+<section class="wrap story-body">
+  {% if content | trim %}
+  <div class="story-body__about">
+    <h2 class="section__title section__title--sm">About this serial</h2>
+    <div class="prose">{{ content | safe }}</div>
+  </div>
+  {% endif %}
+
+  <div class="story-body__toc">
+    <h2 class="section__title section__title--sm">Contents</h2>
+    {% if parts.length %}
+    <ol class="toc">
+      {% for ep in parts %}
+      <li>
+        <a class="toc__row" href="{{ ep.url }}">
+          <span class="toc__spine" style="--spine: {{ color }}; --spine-ink: {{ color | inkOn }}">{{ ep.data.number | roman }}</span>
+          <span class="toc__title">{{ ep.data.title }}</span>
+          <time class="toc__date" datetime="{{ ep.date | isoDate }}">{{ ep.date | shortDate }}</time>
+        </a>
+      </li>
+      {% endfor %}
+      {% if status == "Ongoing" %}
+      <li class="toc__row toc__row--next">
+        <span class="toc__spine toc__spine--next" aria-hidden="true"></span>
+        <span class="toc__title">Part {{ (parts.length + 1) | roman }} · {{ schedule or "coming soon" }}</span>
+      </li>
+      {% endif %}
+    </ol>
+    {% else %}
+    <p class="muted">The first installment is coming soon.</p>
+    {% endif %}
+  </div>
+</section>

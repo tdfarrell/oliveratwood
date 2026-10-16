@@ -1,0 +1,55 @@
+# Builds the site and uploads it to Bluehost every time something changes
+# (including every save from the editor at oliveratwood.com/admin).
+#
+# Needs three repository secrets (Settings → Secrets and variables → Actions):
+#   FTP_SERVER    your Bluehost server name, e.g. box1234.bluehost.com
+#   FTP_USERNAME  the FTP account's username, e.g. deploy@oliveratwood.com
+#   FTP_PASSWORD  the FTP account's password
+# Optional:
+#   FTP_SERVER_DIR  folder to upload into, relative to the FTP account's home.
+#                   Leave unset if the FTP account's directory is public_html.
+
+name: Publish to Bluehost
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # adds a "Run workflow" button for manual republishing
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      FTP_SERVER: ${{ secrets.FTP_SERVER }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Build the site
+        run: |
+          npm ci
+          npm run build
+
+      - name: Remind about missing Bluehost details
+        if: env.FTP_SERVER == ''
+        run: echo "::warning::Site built, but not uploaded. Add the FTP_SERVER, FTP_USERNAME and FTP_PASSWORD secrets to publish to Bluehost."
+
+      - name: Upload to Bluehost
+        if: env.FTP_SERVER != ''
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./_site/
+          server-dir: ${{ secrets.FTP_SERVER_DIR || './' }}

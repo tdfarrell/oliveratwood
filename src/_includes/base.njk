@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% set pageTitle = (title + " — " + site.title) if title and title != site.title else (site.title + " — " + site.tagline) %}
+  <title>{{ pageTitle }}</title>
+  <meta name="description" content="{{ summary or site.description }}">
+  <meta property="og:title" content="{{ title or site.title }}">
+  <meta property="og:description" content="{{ summary or site.description }}">
+  <meta property="og:type" content="{{ 'article' if layout == 'episode.njk' else 'website' }}">
+  <meta property="og:url" content="{{ page.url | absoluteUrl(site.url) }}">
+  {% if ogImage %}<meta property="og:image" content="{{ ogImage | absoluteUrl(site.url) }}">{% endif %}
+  <link rel="canonical" href="{{ page.url | absoluteUrl(site.url) }}">
+  <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="/feed.xml">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='15' fill='%23C9531A'/><circle cx='16' cy='16' r='12' fill='none' stroke='white' stroke-width='1.5'/><text x='16' y='20.5' text-anchor='middle' font-family='Futura,Arial,sans-serif' font-weight='700' font-size='11' fill='white'>OA</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gilda+Display&family=Jost:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="{{ bodyClass }}">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="masthead wrap">
+    <a class="brand" href="/">
+      <span class="brand__mark" aria-hidden="true">OA</span>
+      <span class="brand__name">{{ site.title }}</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="/stories/" {% if page.url | inSection('/stories/') %}aria-current="page"{% endif %}>Stories</a>
+      <a href="/about/" {% if page.url == '/about/' %}aria-current="page"{% endif %}>About</a>
+      <a href="/feed.xml">RSS</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    {{ content | safe }}
+  </main>
+
+  <footer class="footer wrap">
+    <div class="footer__cta">
+      {% if site.newsletterUrl %}
+      <p class="footer__line">New parts, delivered by post. Well, email.</p>
+      <a class="btn btn--accent" href="{{ site.newsletterUrl }}">Subscribe</a>
+      {% else %}
+      <p class="footer__line">New parts, delivered to your feed reader.</p>
+      <a class="btn btn--accent" href="/feed.xml">Follow by RSS</a>
+      {% endif %}
+    </div>
+    <p class="footer__small">&copy; {% year %} {{ site.author }}. All stories are works of fiction.</p>
+  </footer>
+</body>
+</html>

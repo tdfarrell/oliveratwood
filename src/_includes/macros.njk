@@ -1,0 +1,32 @@
+{#
+  A paperback cover. Uses the uploaded image when there is one;
+  otherwise draws a classic three-band cover in the story's color.
+  size: "lg" (featured), "md" (story page), "sm" (cards)
+#}
+{% macro cover(title, image, color, size="md", topLabel="", bottomLabel="", alt="") %}
+{% set ink = color | inkOn %}
+{% if image %}
+<span class="cover cover--{{ size }} cover--image">
+  <img src="{{ image }}" alt="{{ alt or ('Cover of ' + title) }}" sizes="{% if size == 'sm' %}120px{% else %}(max-width: 600px) 80vw, 380px{% endif %}">
+</span>
+{% else %}
+<span class="cover cover--{{ size }} cover--drawn" style="--band: {{ color }}; --band-ink: {{ ink }}" {% if alt %}role="img" aria-label="{{ alt }}"{% endif %}>
+  <span class="cover__band cover__band--top">{% if topLabel and size != 'sm' %}<span class="cover__pill">{{ topLabel }}</span>{% endif %}</span>
+  <span class="cover__middle">
+    {% if size != 'sm' %}<span class="cover__author">Oliver Atwood</span>{% endif %}
+    <span class="cover__title">{{ title }}</span>
+    {% if size != 'sm' %}<span class="cover__rule"></span>{% endif %}
+  </span>
+  <span class="cover__band cover__band--bottom">{% if bottomLabel and size != 'sm' %}<span class="cover__foot">{{ bottomLabel }}</span>{% endif %}</span>
+</span>
+{% endif %}
+{% endmacro %}
+
+{# One installment as a book spine on the shelf. #}
+{% macro spine(ep, color, tilt=false) %}
+<a class="spine{% if tilt %} spine--tilt{% endif %}" href="{{ ep.url }}"
+   style="--spine: {{ color }}; --spine-ink: {{ color | inkOn }}; height: {{ ep.url | spineHeight }}px"
+   title="{{ ep.data.title }} — Part {{ ep.data.number }}">
+  <span class="spine__text">{{ ep.data.title }} · {{ ep.data.number | roman }}</span>
+</a>
+{% endmacro %}

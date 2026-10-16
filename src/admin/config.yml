@@ -1,0 +1,186 @@
+# Oliver Atwood — site editor settings
+# Sign in at oliveratwood.com/admin with a GitHub personal access token (see README).
+
+backend:
+  name: github
+  repo: tdfarrell/oliveratwood
+  branch: main
+  commit_messages:
+    create: "New {{collection}}: {{slug}}"
+    update: "Edit {{collection}}: {{slug}}"
+    delete: "Delete {{collection}}: {{slug}}"
+    uploadMedia: "Upload {{path}}"
+    deleteMedia: "Delete {{path}}"
+
+site_url: https://oliveratwood.com
+display_url: https://oliveratwood.com
+logo_url: /images/editor-logo.svg
+
+media_folder: src/images/uploads
+public_folder: /images/uploads
+
+slug:
+  encoding: ascii
+  clean_accents: true
+
+collections:
+  - name: episodes
+    label: Episodes
+    label_singular: Episode
+    description: One installment of a serial. Turn on "Draft" to save without publishing.
+    folder: src/episodes
+    create: true
+    extension: md
+    format: frontmatter
+    slug: "{{fields.story}}-part-{{fields.number}}"
+    summary: "{{title}} — Part {{number}} {{draft}}"
+    sortable_fields:
+      fields: [date, number, title]
+      default:
+        field: date
+        direction: descending
+    view_groups:
+      - label: Story
+        field: story
+    view_filters:
+      - label: Drafts
+        field: draft
+        pattern: true
+    fields:
+      - label: Story
+        name: story
+        widget: relation
+        collection: stories
+        value_field: "{{slug}}"
+        search_fields: [title]
+        display_fields: [title]
+      - label: Part number
+        name: number
+        widget: number
+        value_type: int
+        min: 1
+        hint: The order this installment appears in its story (1, 2, 3…).
+      - label: Title
+        name: title
+        widget: string
+      - label: Publish date
+        name: date
+        widget: datetime
+        time_format: false
+        format: YYYY-MM-DD
+      - label: Draft
+        name: draft
+        widget: boolean
+        default: false
+        required: false
+        hint: When on, this installment is saved but hidden from the site.
+      - label: Cover for this part
+        name: cover
+        widget: image
+        required: false
+        hint: Optional. Leave empty to use the story's cover. Tall 2:3 images work best (about 1200 × 1800).
+      - label: One-line teaser
+        name: summary
+        widget: string
+        required: false
+        hint: Shown on the home page and in link previews.
+      - label: Previously…
+        name: previously
+        widget: text
+        required: false
+        hint: Optional recap shown at the top for returning readers.
+      - label: Story text
+        name: body
+        widget: markdown
+        hint: Use a line with three dashes (---) for a scene break.
+      - label: Note from Oliver
+        name: authorNote
+        widget: text
+        required: false
+        hint: Optional note shown after the installment.
+
+  - name: stories
+    label: Stories
+    label_singular: Story
+    description: Each serial. Its contents page lists every published installment.
+    folder: src/stories
+    create: true
+    extension: md
+    format: frontmatter
+    slug: "{{slug}}"
+    summary: "{{title}} ({{status}})"
+    fields:
+      - label: Title
+        name: title
+        widget: string
+      - label: Short description
+        name: summary
+        widget: text
+        hint: One or two sentences for story lists and link previews.
+      - label: Cover image
+        name: cover
+        widget: image
+        required: false
+        hint: Tall 2:3 paperback shape works best (about 1200 × 1800). Leave empty and the site draws a classic banded cover.
+      - label: Spine color
+        name: spine
+        widget: color
+        required: false
+        hint: Color for this story's book spines, page band and drawn cover. Pick a color from your cover art.
+      - label: Genre
+        name: genre
+        widget: string
+        required: false
+      - label: Status
+        name: status
+        widget: select
+        options: [Ongoing, Complete, Hiatus]
+        default: Ongoing
+      - label: Release schedule
+        name: schedule
+        widget: string
+        required: false
+        hint: e.g. "New parts every Friday"
+      - label: Display order
+        name: order
+        widget: number
+        value_type: int
+        required: false
+        hint: Lower numbers appear first.
+      - label: Hidden
+        name: draft
+        widget: boolean
+        default: false
+        required: false
+        hint: Hide the whole story from the site.
+      - label: Synopsis
+        name: body
+        widget: markdown
+        required: false
+
+  - name: pages
+    label: Pages & Settings
+    files:
+      - name: about
+        label: About page
+        file: src/about.md
+        fields:
+          - { label: Layout, name: layout, widget: hidden, default: page.njk }
+          - { label: Permalink, name: permalink, widget: hidden, default: /about/ }
+          - { label: Title, name: title, widget: string }
+          - { label: Body, name: body, widget: markdown }
+      - name: site
+        label: Site settings
+        file: src/_data/site.json
+        format: json
+        fields:
+          - { label: Site title, name: title, widget: string }
+          - { label: Tagline, name: tagline, widget: string, hint: The big line on the home page. }
+          - { label: Description, name: description, widget: text, hint: Used by search engines and the RSS feed. }
+          - { label: Author name, name: author, widget: string }
+          - { label: Site address, name: url, widget: string }
+          - label: Newsletter signup link
+            name: newsletterUrl
+            widget: string
+            required: false
+            hint: Paste a Buttondown, Substack or similar signup URL to show a Subscribe link in the footer.

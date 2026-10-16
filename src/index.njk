@@ -1,0 +1,74 @@
+---
+layout: base.njk
+title: Oliver Atwood
+---
+{% from "macros.njk" import cover as drawCover, spine %}
+{% set newest = collections.latest[0] %}
+
+{% if newest %}
+{% set ns = collections.stories | storyBySlug(newest.data.story) %}
+{% set nsColor = ns | spineColor(collections.stories) %}
+<section class="wrap hero">
+  <a class="hero__cover" href="{{ newest.url }}">
+    {{ drawCover(ns.data.title if ns else newest.data.title, newest.data.cover or (ns.data.cover if ns else ""), nsColor, "lg", "Part " + (newest.data.number | roman), "Serial fiction · " + newest.data.number) }}
+    <span class="hero__sticker">Part {{ newest.data.number }} · New</span>
+  </a>
+  <div class="hero__text">
+    <p class="kicker">New on the shelf · {{ newest.date | shortDate }}</p>
+    <h1 class="hero__title">{{ newest.data.title }}</h1>
+    <p class="hero__summary">
+      {% if ns %}<em>{{ ns.data.title }}</em>, Part {{ newest.data.number }}.{% endif %}
+      {{ newest.data.summary }}
+    </p>
+    <div class="actions">
+      <a class="btn" href="{{ newest.url }}">Read Part {{ newest.data.number }}</a>
+      {% set firstPart = (collections.episodes | forStory(newest.data.story))[0] %}
+      {% if firstPart and firstPart.url != newest.url %}
+      <a class="btn btn--outline" href="{{ firstPart.url }}">Start from Part 1</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% else %}
+<section class="wrap hero hero--empty">
+  <div class="hero__text">
+    <p class="kicker">Serial fiction</p>
+    <h1 class="hero__title">{{ site.tagline }}</h1>
+  </div>
+</section>
+{% endif %}
+
+{% if collections.episodes.length %}
+<section class="wrap section">
+  <h2 class="section__title">The shelf</h2>
+  <p class="section__lede">Every installment, spine out. Pull one down to read it.</p>
+  <div class="shelf" data-shelf>
+    <div class="shelf__row">
+      {% for s in collections.stories %}
+        {% set parts = collections.episodes | forStory(s.fileSlug) %}
+        {% if parts.length %}
+          {% set c = s | spineColor(collections.stories) %}
+          {% for ep in parts %}{{ spine(ep, c, ep.url == newest.url) }}{% endfor %}
+          {% if s.data.status == "Ongoing" %}
+          <span class="spine spine--next" style="height: 250px" title="{{ s.data.schedule or 'Coming soon' }}"><span class="spine__text">Part {{ (parts.length + 1) | roman }} · Coming soon</span></span>
+          {% endif %}
+          {% if not loop.last %}<span class="shelf__gap" aria-hidden="true"></span>{% endif %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="wrap section">
+  <h2 class="section__title">The series</h2>
+  {% include "story-list.njk" %}
+</section>
+
+<script>
+  // Start the shelf centered on the newest installment.
+  document.querySelectorAll("[data-shelf]").forEach(function (el) {
+    var newest = el.querySelector(".spine--tilt");
+    if (newest) el.scrollLeft = newest.offsetLeft - (el.clientWidth - newest.offsetWidth) / 2;
+  });
+</script>
