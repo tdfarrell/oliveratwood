@@ -20,7 +20,9 @@ I leaned back in my chair and rubbed my eyes with the heels of my palms. “It�
 
 The last thing I wanted was to get into a discussion about the accuracy and integrity of WNBA preseason rankings, especially with the office outcast, yet here I was. Trapped in a particle-board prison, quickly preparing to bullshit my way through small talk with a grown man wearing socks with a cartoon sea sponge.
 
-***PING****. “*Saved by the bell,” I whispered to myself. I turned to my desk and saw the notification flash on my screen. “Ahh, sorry, man. Gotta take this.”
+**_PING._** 
+
+"Saved by the bell,” I whispered to myself. I turned to my desk and saw the notification flash on my screen. “Ahh, sorry, man. Gotta take this.”
 
 Sam nodded and toasted the air with his mug as I pushed my chair back into my cubicle. I let out a deep breath as I pulled my legs back under the desk, shaking my head and trying to forget the interaction and move forward. The computer continued to flash its standard white box on the dark green desktop background, the word _PROMPT_ in large black block-style sans-serif font. 
 
