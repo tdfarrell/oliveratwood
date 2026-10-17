@@ -46,9 +46,9 @@ Sam tapped my cubicle wall twice, then headed down the walkway towards the break
 
 I finished typing the response in the chat window and tagged the status as ‘Ready’ so the system could review it. It took about thirty seconds for the icon to turn green and the ‘Send’ button to light up. I fired it off and slumped back in my chair, watching my response type itself out. 
 
-_Hi! 😊 Absolutely — I can help you research the most effective workouts for losing fat around your stomach and hips and build a routine that fits your goals._
+**_Hi! 😊 Absolutely — I can help you research the most effective workouts for losing fat around your stomach and hips and build a routine that fits your goals._**
 
-_The most important thing to know is that you can strengthen and tone your stomach and hips, but you can't choose exactly where your body burns fat. Exercises such as crunches and leg raises build muscle in those areas, while overall fat loss comes from a combination of physical activity, strength training, nutrition, and consistency._
+**_The most important thing to know is that you can strengthen and tone your stomach and hips, but you can't choose exactly where your body burns fat. Exercises such as crunches and leg raises build muscle in those areas, while overall fat loss comes from a combination of physical activity, strength training, nutrition, and consistency._**
 
 As the text finished sending, I found myself noticing the sticky notes and the buzzing overhead lights once again. I was on the verge of slipping back into a quick zone-out trip before the unmistakable off-beat humming of my neighbor came back into earshot. 
 
