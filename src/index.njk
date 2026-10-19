@@ -78,38 +78,53 @@ title: Oliver Atwood
   <p class="section__lede">Everything Oliver has written, spine out. Pull one down to read it.</p>
   <div class="shelf" data-shelf>
     <div class="shelf__row">
-      {% for s in collections.stories | withParts(collections.episodes) %}
-        {% if not loop.first %}<span class="shelf__gap" aria-hidden="true"></span>{% endif %}
-        {% set parts = collections.episodes | forStory(s.fileSlug) %}
-        {% set c = s | spineColor(collections.stories) %}
-        {% for ep in parts %}
-          {{ spine(ep.url, ep.data.title + " · " + (ep.data.number | roman), c, ep.url == newest.url, s.data.title + ", Part " + ep.data.number + ": " + ep.data.title) }}
-        {% endfor %}
-        {% if s.data.status == "Ongoing" %}
-        <span class="spine spine--next" style="height: 250px" title="{{ s.data.schedule or 'Coming soon' }}"><span class="spine__text">Part {{ (parts.length + 1) | roman }} · Coming soon</span></span>
-        {% endif %}
-      {% endfor %}
+      {% set serialsOnShelf = collections.stories | withParts(collections.episodes) %}
+      {% if serialsOnShelf.length %}
+      <div class="shelf__section">
+        <div class="shelf__books">
+          {% for s in serialsOnShelf %}
+            {% if not loop.first %}<span class="shelf__spacer" aria-hidden="true"></span>{% endif %}
+            {% set parts = collections.episodes | forStory(s.fileSlug) %}
+            {% set c = s | spineColor(collections.stories) %}
+            {% for ep in parts %}
+              {{ spine(ep.url, ep.data.title + " · " + (ep.data.number | roman), c, ep.url == newest.url, s.data.title + ", Part " + ep.data.number + ": " + ep.data.title) }}
+            {% endfor %}
+            {% if s.data.status == "Ongoing" %}
+            <span class="spine spine--next" style="height: 250px" title="{{ s.data.schedule or 'Coming soon' }}"><span class="spine__text">Part {{ (parts.length + 1) | roman }} · Coming soon</span></span>
+            {% endif %}
+          {% endfor %}
+        </div>
+        <a class="shelf__label" href="/stories/">Serials</a>
+      </div>
+      {% endif %}
 
       {% if collections.shorts.length %}
-        {% if collections.episodes.length %}<span class="shelf__gap" aria-hidden="true"></span>{% endif %}
-        {% for p in collections.shorts | reverse %}
-          {{ spine(p.url, p.data.title, p | pieceColor(collections.shorts, 2), p.url == newest.url, "Short story: " + p.data.title) }}
-        {% endfor %}
+      <div class="shelf__section">
+        <div class="shelf__books">
+          {% for p in collections.shorts | reverse %}
+            {{ spine(p.url, p.data.title, p | pieceColor(collections.shorts, 2), p.url == newest.url, "Short story: " + p.data.title) }}
+          {% endfor %}
+        </div>
+        <a class="shelf__label" href="/short-stories/">Short Stories</a>
+      </div>
       {% endif %}
 
       {% if collections.poems.length %}
-        {% if collections.episodes.length or collections.shorts.length %}<span class="shelf__gap" aria-hidden="true"></span>{% endif %}
-        {% for p in collections.poems | reverse %}
-          {{ spine(p.url, p.data.title, p | pieceColor(collections.poems, 4), p.url == newest.url, "Poem: " + p.data.title, true) }}
-        {% endfor %}
+      <div class="shelf__section">
+        <div class="shelf__books">
+          {% for p in collections.poems | reverse %}
+            {{ spine(p.url, p.data.title, p | pieceColor(collections.poems, 4), p.url == newest.url, "Poem: " + p.data.title, true) }}
+          {% endfor %}
+        </div>
+        <a class="shelf__label" href="/poetry/">Poems</a>
+      </div>
       {% endif %}
+
+      <div class="shelf__section shelf__section--fill" aria-hidden="true">
+        <div class="shelf__books"></div>
+      </div>
     </div>
   </div>
-  <p class="shelf__legend">
-    {% if collections.stories.length %}<span>Serials</span>{% endif %}
-    {% if collections.shorts.length %}<span>Short stories</span>{% endif %}
-    {% if collections.poems.length %}<span>Poems (the slim ones)</span>{% endif %}
-  </p>
 </section>
 {% endif %}
 

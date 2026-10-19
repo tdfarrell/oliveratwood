@@ -286,8 +286,8 @@ a.toc__row:hover .toc__title { color: var(--accent-text); }
 /* Shelf: slim poetry volumes and a small legend */
 .spine--thin { width: 2.9rem; }
 .spine--thin .spine__text { font-size: .9rem; font-weight: 500; font-style: italic; }
-.shelf__legend { display: flex; flex-wrap: wrap; gap: .4rem 1.5rem; margin: 1.5rem 0 0; font-size: .9rem; color: var(--ink-2); }
-.shelf__legend span + span::before { content: "·"; margin-right: 1.5rem; color: var(--rule); }
+
+
 
 /* Short story cards reuse the series cards; add a date line */
 .series__date { font-size: .88rem; color: var(--ink-2); margin-top: .15rem; }
@@ -361,3 +361,35 @@ a.toc__row:hover .toc__title { color: var(--accent-text); }
 .series, .poems { grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr)); }
 .hero__sticker { top: -.9rem; right: -1rem; }
 .about-chip .cover__middle > * { display: none; }
+
+/* Shelf sections: each category sits on its own stretch of the board,
+   with its label directly underneath. The board stays one continuous plank. */
+.shelf__row {
+  display: flex; align-items: flex-start; gap: 0;
+  width: max-content; min-width: 100%; padding: 0;
+  border-bottom: 0; box-shadow: none;
+}
+.shelf__section { display: flex; flex-direction: column; flex: none; }
+.shelf__section--fill { flex: 1 1 auto; }
+.shelf__books {
+  display: flex; align-items: flex-end; gap: .4rem;
+  height: 23rem;                     /* same height everywhere so the board lines up */
+  padding: 0 1.75rem 0 1.75rem;      /* room either side of each group */
+  border-bottom: 1.1rem solid var(--wood);
+  box-shadow: 0 .6rem 0 var(--wood-dark);
+}
+.shelf__section:first-child .shelf__books { padding-left: .75rem; }
+.shelf__section--fill .shelf__books { padding: 0; }
+.shelf__spacer { width: 1.5rem; flex: none; }
+.spine--tilt { margin-left: .5rem; margin-right: .5rem; }
+
+.shelf__label {
+  align-self: stretch;
+  margin: 1.35rem 1.75rem 0;
+  padding-top: .55rem;
+  border-top: 2px solid var(--rule);
+  font-weight: 600; font-size: .8rem; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--ink-2); text-decoration: none; white-space: nowrap;
+}
+.shelf__section:first-child .shelf__label { margin-left: .75rem; }
+.shelf__label:hover { color: var(--accent-text); border-top-color: currentColor; }
