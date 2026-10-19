@@ -1,10 +1,9 @@
 ---
 layout: page.njk
-title: About
 permalink: /about/
+title: About
 ---
-Oliver Atwood writes short serial fiction, published here one installment at a time.
 
-Each story unfolds in parts of a few thousand words. Start any serial from Part 1 on its contents page, or pick up wherever you left off.
+Oliver Atwood writes short stories and serial fiction.
 
-*This is placeholder text. Edit it any time from the site editor under Pages → About.*
+Each serial story unfolds in parts and is released regularly. Start any serial from Part 1 on its contents page, or pick up wherever you left off.
