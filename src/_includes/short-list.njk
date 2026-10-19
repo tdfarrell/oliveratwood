@@ -1,0 +1,18 @@
+{% from "macros.njk" import cover as drawCover %}
+<ul class="series">
+  {% for p in shortList %}
+  <li>
+    <a class="series__card" href="{{ p.url }}">
+      {{ drawCover(p.data.title, p.data.cover, p | pieceColor(collections.shorts, 2), "sm", alt="") }}
+      <span class="series__body">
+        <span class="series__meta">
+          {% if p.data.genre %}{{ p.data.genre }} · {% endif %}{{ p.content | readingTime }}
+        </span>
+        <span class="series__title">{{ p.data.title }}</span>
+        <span class="series__summary">{{ p.data.summary or (p.content | excerpt(26)) }}</span>
+        <time class="series__date" datetime="{{ p.date | isoDate }}">{{ p.date | readableDate }}</time>
+      </span>
+    </a>
+  </li>
+  {% endfor %}
+</ul>

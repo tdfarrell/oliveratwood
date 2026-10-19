@@ -1,0 +1,16 @@
+---
+layout: base.njk
+title: Short Stories
+summary: Complete stories, each told in a single sitting.
+permalink: /short-stories/
+---
+<section class="wrap section section--first">
+  <h1 class="plain-title">Short Stories</h1>
+  <p class="section__lede">Complete stories, each one read in a single sitting.</p>
+  {% if collections.shorts.length %}
+  {% set shortList = collections.shorts %}
+  {% include "short-list.njk" %}
+  {% else %}
+  <p class="empty">The first short story is on its way.</p>
+  {% endif %}
+</section>

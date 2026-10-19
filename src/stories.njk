@@ -1,10 +1,14 @@
 ---
 layout: base.njk
-title: Stories
+title: Serials
 permalink: /stories/
 ---
 <section class="wrap section section--first">
-  <h1 class="plain-title">Stories</h1>
-  <p class="section__lede">Every serial, from the first installment to the latest.</p>
+  <h1 class="plain-title">Serials</h1>
+  <p class="section__lede">Stories told in installments. Start any serial from Part 1, or pick up where you left off.</p>
+  {% if collections.stories.length %}
   {% include "story-list.njk" %}
+  {% else %}
+  <p class="empty">The first serial is on its way.</p>
+  {% endif %}
 </section>

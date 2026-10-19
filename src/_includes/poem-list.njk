@@ -1,0 +1,11 @@
+<ul class="poems">
+  {% for p in poemList %}
+  <li>
+    <a class="poems__item" href="{{ p.url }}" style="--spine: {{ p | pieceColor(collections.poems, 4) }}">
+      <span class="poems__title">{{ p.data.title }}</span>
+      <span class="poems__line">{{ p.data.summary or (p.content | firstLine) }}</span>
+      <time class="poems__date" datetime="{{ p.date | isoDate }}">{{ p.date | readableDate }}</time>
+    </a>
+  </li>
+  {% endfor %}
+</ul>

@@ -62,3 +62,12 @@ layout: base.njk
     {% endif %}
   </div>
 </section>
+
+{% set storyPosts = collections.posts | postsAbout(page.fileSlug) %}
+{% if storyPosts.length %}
+<section class="wrap section">
+  <h2 class="section__title section__title--sm">From the blog</h2>
+  {% set postList = storyPosts %}
+  {% include "post-list.njk" %}
+</section>
+{% endif %}

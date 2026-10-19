@@ -1,0 +1,54 @@
+---
+layout: base.njk
+bodyClass: reading
+---
+{% from "macros.njk" import cover as drawCover %}
+{% set color = collections.shorts | storyBySlug(page.fileSlug) | pieceColor(collections.shorts, 2) %}
+{% set older = collections.shorts | olderThan(page.url) %}
+{% set newer = collections.shorts | newerThan(page.url) %}
+
+<div class="progress" aria-hidden="true" style="--spine: {{ color }}"><span></span></div>
+
+<article class="wrap page-sheet" style="--spine: {{ color }}; --spine-ink: {{ color | inkOn }}">
+  <header class="chapter">
+    <a class="chapter__story" href="/short-stories/">Short Stories</a>
+    <div class="chapter__cover">
+      {{ drawCover(title, cover, color, "md", "Short story", genre or "Short fiction", alt=("Cover of " + title)) }}
+    </div>
+    <h1 class="chapter__title">{{ title }}</h1>
+    <p class="chapter__meta">
+      <time datetime="{{ page.date | isoDate }}">{{ page.date | readableDate }}</time> · {{ content | readingTime }}{% if genre %} · {{ genre }}{% endif %}
+    </p>
+  </header>
+
+  <div class="prose prose--story">
+    {{ content | safe }}
+  </div>
+
+  <p class="end-mark">The End</p>
+
+  {% if authorNote %}
+  <aside class="note"><span class="note__label">A note from Oliver</span> {{ authorNote }}</aside>
+  {% endif %}
+
+  <nav class="pager" aria-label="More short stories">
+    {% if older %}
+    <a class="pager__link" href="{{ older.url }}">
+      <span class="pager__dir">← Earlier story</span>
+      <span class="pager__title">{{ older.data.title }}</span>
+    </a>
+    {% else %}<span></span>{% endif %}
+    {% if newer %}
+    <a class="pager__link pager__link--next" href="{{ newer.url }}">
+      <span class="pager__dir">Newer story →</span>
+      <span class="pager__title">{{ newer.data.title }}</span>
+    </a>
+    {% else %}
+    <a class="pager__link pager__link--next" href="/short-stories/">
+      <span class="pager__dir">All short stories →</span>
+      <span class="pager__title">The collection</span>
+    </a>
+    {% endif %}
+  </nav>
+</article>
+{% include "progress-script.njk" %}

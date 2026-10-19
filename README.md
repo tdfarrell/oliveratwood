@@ -52,12 +52,26 @@ steps and sign in again.
 
 ## Day-to-day writing
 
-**Post a new installment:** /admin → **Episodes → New**. Pick the story, set
-the part number and date, write, and save. Live in a minute or two.
+**Post a new serial installment:** /admin → **Serial Episodes → New**. Pick
+the serial, set the part number and date, write, and save. Live in a minute or two.
+Start a new serial under **Serials → New**.
+
+**Short stories:** /admin → **Short Stories → New**. Complete, stand-alone
+stories with no installments. Optional cover, spine color and genre.
+
+**Poems:** /admin → **Poetry → New**. Type the poem exactly as it should
+appear: every line break is kept, and a blank line starts a new stanza.
+Optional dedication and epigraph.
+
+**Blog posts:** /admin → **Blog → New**. For news, notes on writing, or
+behind-the-scenes posts. Pick a serial under **About a serial** and the post
+links to that story and appears on the story's page.
+
+The menu only shows a section once it has something published in it.
 
 **Drafts:** switch on **Draft** to save without publishing. Switch it off when ready.
 
-**Covers:** in **Stories**, open a story and upload a **Cover image**. Tall
+**Covers:** in **Serials** (or **Short Stories**), open a story and upload a **Cover image**. Tall
 2:3 images (about 1200 × 1800) look best. They're resized automatically. With
 no cover, the site draws a classic three-band paperback cover.
 Each episode can also have its own cover; leave it empty to use the story's.
@@ -86,6 +100,9 @@ signup link (Buttondown, Substack…) to swap the footer's RSS button for Subscr
 |---|---|
 | `src/episodes/` | One Markdown file per installment |
 | `src/stories/` | One Markdown file per serial |
+| `src/short-stories/` | One Markdown file per short story |
+| `src/poetry/` | One Markdown file per poem |
+| `src/blog/` | One Markdown file per blog post |
 | `src/images/uploads/` | Cover images and other uploads |
 | `src/about.md` | About page |
 | `src/_data/site.json` | Site title, tagline, newsletter link |

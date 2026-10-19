@@ -2,71 +2,166 @@
 layout: base.njk
 title: Oliver Atwood
 ---
-{% from "macros.njk" import cover as drawCover, spine %}
-{% set newest = collections.latest[0] %}
+{% from "macros.njk" import cover as drawCover, spine, aboutChip %}
+{% set newest = collections.fiction[0] %}
 
+{# ---------- Featured: the newest piece of fiction ---------- #}
 {% if newest %}
-{% set ns = collections.stories | storyBySlug(newest.data.story) %}
-{% set nsColor = ns | spineColor(collections.stories) %}
+  {% set kind = newest.data.kind %}
+  {% if kind == "episode" %}
+    {% set ns = collections.stories | storyBySlug(newest.data.story) %}
+    {% set fTitle = ns.data.title if ns else newest.data.title %}
+    {% set fImage = newest.data.cover or (ns.data.cover if ns else "") %}
+    {% set fColor = ns | spineColor(collections.stories) %}
+    {% set fPill = "Part " + (newest.data.number | roman) %}
+    {% set fFoot = "Serial fiction · " + newest.data.number %}
+    {% set fSticker = "Part " + newest.data.number + " · New" %}
+    {% set firstPart = (collections.episodes | forStory(newest.data.story))[0] %}
+    {% set fSecondUrl = firstPart.url if firstPart and firstPart.url != newest.url else "" %}
+    {% set fSecondLabel = "Start from Part 1" %}
+    {% set fRead = "Read Part " + newest.data.number %}
+  {% elif kind == "short" %}
+    {% set fTitle = newest.data.title %}
+    {% set fImage = newest.data.cover %}
+    {% set fColor = newest | pieceColor(collections.shorts, 2) %}
+    {% set fPill = "Short story" %}
+    {% set fFoot = newest.data.genre or "Short fiction" %}
+    {% set fSticker = "Short story · New" %}
+    {% set fSecondUrl = "/short-stories/" if collections.shorts.length > 1 else "" %}
+    {% set fSecondLabel = "All short stories" %}
+    {% set fRead = "Read the story" %}
+  {% else %}
+    {% set fTitle = newest.data.title %}
+    {% set fImage = newest.data.cover %}
+    {% set fColor = newest | pieceColor(collections.poems, 4) %}
+    {% set fPill = "Poem" %}
+    {% set fFoot = "Poetry" %}
+    {% set fSticker = "New poem" %}
+    {% set fSecondUrl = "/poetry/" if collections.poems.length > 1 else "" %}
+    {% set fSecondLabel = "All poetry" %}
+    {% set fRead = "Read the poem" %}
+  {% endif %}
+
 <section class="wrap hero">
   <a class="hero__cover" href="{{ newest.url }}">
-    {{ drawCover(ns.data.title if ns else newest.data.title, newest.data.cover or (ns.data.cover if ns else ""), nsColor, "lg", "Part " + (newest.data.number | roman), "Serial fiction · " + newest.data.number) }}
-    <span class="hero__sticker">Part {{ newest.data.number }} · New</span>
+    {{ drawCover(fTitle, fImage, fColor, "lg", fPill, fFoot) }}
+    <span class="hero__sticker">{{ fSticker }}</span>
   </a>
   <div class="hero__text">
     <p class="kicker">New on the shelf · {{ newest.date | shortDate }}</p>
     <h1 class="hero__title">{{ newest.data.title }}</h1>
     <p class="hero__summary">
-      {% if ns %}<em>{{ ns.data.title }}</em>, Part {{ newest.data.number }}.{% endif %}
-      {{ newest.data.summary }}
+      {% if kind == "episode" and ns %}<em>{{ ns.data.title }}</em>, Part {{ newest.data.number }}.{% endif %}
+      {% if newest.data.summary %}{{ newest.data.summary }}
+      {% elif kind == "poem" %}<span class="hero__firstline">{{ newest.content | firstLine }}…</span>
+      {% elif kind == "short" %}{{ newest.content | excerpt(28) }}{% endif %}
     </p>
     <div class="actions">
-      <a class="btn" href="{{ newest.url }}">Read Part {{ newest.data.number }}</a>
-      {% set firstPart = (collections.episodes | forStory(newest.data.story))[0] %}
-      {% if firstPart and firstPart.url != newest.url %}
-      <a class="btn btn--outline" href="{{ firstPart.url }}">Start from Part 1</a>
-      {% endif %}
+      <a class="btn" href="{{ newest.url }}">{{ fRead }}</a>
+      {% if fSecondUrl %}<a class="btn btn--outline" href="{{ fSecondUrl }}">{{ fSecondLabel }}</a>{% endif %}
     </div>
   </div>
 </section>
 {% else %}
 <section class="wrap hero hero--empty">
   <div class="hero__text">
-    <p class="kicker">Serial fiction</p>
+    <p class="kicker">Fiction &amp; poetry</p>
     <h1 class="hero__title">{{ site.tagline }}</h1>
   </div>
 </section>
 {% endif %}
 
-{% if collections.episodes.length %}
+{# ---------- The shelf: every serial part, short story and poem, spine out ---------- #}
+{% if collections.fiction.length %}
 <section class="wrap section">
   <h2 class="section__title">The shelf</h2>
-  <p class="section__lede">Every installment, spine out. Pull one down to read it.</p>
+  <p class="section__lede">Everything Oliver has written, spine out. Pull one down to read it.</p>
   <div class="shelf" data-shelf>
     <div class="shelf__row">
-      {% for s in collections.stories %}
+      {% for s in collections.stories | withParts(collections.episodes) %}
+        {% if not loop.first %}<span class="shelf__gap" aria-hidden="true"></span>{% endif %}
         {% set parts = collections.episodes | forStory(s.fileSlug) %}
-        {% if parts.length %}
-          {% set c = s | spineColor(collections.stories) %}
-          {% for ep in parts %}{{ spine(ep, c, ep.url == newest.url) }}{% endfor %}
-          {% if s.data.status == "Ongoing" %}
-          <span class="spine spine--next" style="height: 250px" title="{{ s.data.schedule or 'Coming soon' }}"><span class="spine__text">Part {{ (parts.length + 1) | roman }} · Coming soon</span></span>
-          {% endif %}
-          {% if not loop.last %}<span class="shelf__gap" aria-hidden="true"></span>{% endif %}
+        {% set c = s | spineColor(collections.stories) %}
+        {% for ep in parts %}
+          {{ spine(ep.url, ep.data.title + " · " + (ep.data.number | roman), c, ep.url == newest.url, s.data.title + ", Part " + ep.data.number + ": " + ep.data.title) }}
+        {% endfor %}
+        {% if s.data.status == "Ongoing" %}
+        <span class="spine spine--next" style="height: 250px" title="{{ s.data.schedule or 'Coming soon' }}"><span class="spine__text">Part {{ (parts.length + 1) | roman }} · Coming soon</span></span>
         {% endif %}
       {% endfor %}
+
+      {% if collections.shorts.length %}
+        {% if collections.episodes.length %}<span class="shelf__gap" aria-hidden="true"></span>{% endif %}
+        {% for p in collections.shorts | reverse %}
+          {{ spine(p.url, p.data.title, p | pieceColor(collections.shorts, 2), p.url == newest.url, "Short story: " + p.data.title) }}
+        {% endfor %}
+      {% endif %}
+
+      {% if collections.poems.length %}
+        {% if collections.episodes.length or collections.shorts.length %}<span class="shelf__gap" aria-hidden="true"></span>{% endif %}
+        {% for p in collections.poems | reverse %}
+          {{ spine(p.url, p.data.title, p | pieceColor(collections.poems, 4), p.url == newest.url, "Poem: " + p.data.title, true) }}
+        {% endfor %}
+      {% endif %}
     </div>
   </div>
+  <p class="shelf__legend">
+    {% if collections.stories.length %}<span>Serials</span>{% endif %}
+    {% if collections.shorts.length %}<span>Short stories</span>{% endif %}
+    {% if collections.poems.length %}<span>Poems (the slim ones)</span>{% endif %}
+  </p>
 </section>
 {% endif %}
 
+{# ---------- Serials ---------- #}
+{% if collections.stories.length %}
 <section class="wrap section">
-  <h2 class="section__title">The series</h2>
+  <div class="section__head">
+    <h2 class="section__title">Serials</h2>
+    <a class="section__more" href="/stories/">All serials →</a>
+  </div>
   {% include "story-list.njk" %}
 </section>
+{% endif %}
+
+{# ---------- Short stories ---------- #}
+{% if collections.shorts.length %}
+<section class="wrap section">
+  <div class="section__head">
+    <h2 class="section__title">Short stories</h2>
+    <a class="section__more" href="/short-stories/">All short stories →</a>
+  </div>
+  {% set shortList = collections.shorts | head(4) %}
+  {% include "short-list.njk" %}
+</section>
+{% endif %}
+
+{# ---------- Poetry ---------- #}
+{% if collections.poems.length %}
+<section class="wrap section">
+  <div class="section__head">
+    <h2 class="section__title">Poetry</h2>
+    <a class="section__more" href="/poetry/">All poetry →</a>
+  </div>
+  {% set poemList = collections.poems | head(4) %}
+  {% include "poem-list.njk" %}
+</section>
+{% endif %}
+
+{# ---------- Blog ---------- #}
+{% if collections.posts.length %}
+<section class="wrap section">
+  <div class="section__head">
+    <h2 class="section__title">From the blog</h2>
+    <a class="section__more" href="/blog/">All posts →</a>
+  </div>
+  {% set postList = collections.posts | head(3) %}
+  {% include "post-list.njk" %}
+</section>
+{% endif %}
 
 <script>
-  // Start the shelf centered on the newest installment.
+  // Start the shelf centered on the newest piece.
   document.querySelectorAll("[data-shelf]").forEach(function (el) {
     var newest = el.querySelector(".spine--tilt");
     if (newest) el.scrollLeft = newest.offsetLeft - (el.clientWidth - newest.offsetWidth) / 2;

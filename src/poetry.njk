@@ -1,0 +1,16 @@
+---
+layout: base.njk
+title: Poetry
+summary: Poems by Oliver Atwood.
+permalink: /poetry/
+---
+<section class="wrap section section--first">
+  <h1 class="plain-title">Poetry</h1>
+  <p class="section__lede">The slim volumes on the shelf.</p>
+  {% if collections.poems.length %}
+  {% set poemList = collections.poems %}
+  {% include "poem-list.njk" %}
+  {% else %}
+  <p class="empty">The first poem is on its way.</p>
+  {% endif %}
+</section>

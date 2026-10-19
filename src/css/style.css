@@ -267,3 +267,97 @@ a.toc__row:hover .toc__title { color: var(--accent-text); }
   .progress span { background: color-mix(in srgb, var(--spine) 60%, #FFFFFF); }
   .page-sheet { box-shadow: 0 1px 0 var(--rule); }
 }
+
+/* =====================================================
+   Short stories, poetry and blog
+   ===================================================== */
+
+/* Menu: wrap gracefully now that there are more sections */
+.nav { flex-wrap: wrap; column-gap: 1.6rem; row-gap: .25rem; }
+@media (max-width: 40rem) { .nav { column-gap: 1.1rem; font-size: 1rem; } }
+
+/* Section headings with an "All …" link */
+.section__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .5rem 1.5rem; margin-bottom: 1.5rem; }
+.section__head .section__title { margin: 0; }
+.section__more { font-weight: 600; font-size: 1rem; text-decoration: none; color: var(--accent-text); }
+.section__more:hover { text-decoration: underline; text-underline-offset: .25rem; }
+.empty { font-family: var(--display); font-size: 1.6rem; color: var(--ink-2); margin: 1rem 0 0; }
+
+/* Shelf: slim poetry volumes and a small legend */
+.spine--thin { width: 2.9rem; }
+.spine--thin .spine__text { font-size: .9rem; font-weight: 500; font-style: italic; }
+.shelf__legend { display: flex; flex-wrap: wrap; gap: .4rem 1.5rem; margin: 1.5rem 0 0; font-size: .9rem; color: var(--ink-2); }
+.shelf__legend span + span::before { content: "·"; margin-right: 1.5rem; color: var(--rule); }
+
+/* Short story cards reuse the series cards; add a date line */
+.series__date { font-size: .88rem; color: var(--ink-2); margin-top: .15rem; }
+
+/* Poetry list: slim spines beside each title */
+.poems { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: 1rem 1.75rem; }
+.poems__item {
+  display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto auto; column-gap: 1.1rem; row-gap: .2rem;
+  padding: 1.1rem 1.25rem 1.2rem 0; background: var(--sheet); border-radius: 4px; text-decoration: none; height: 100%;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.poems__item::before { content: ""; grid-row: 1 / -1; width: .75rem; border-radius: 4px 0 0 4px; background: var(--spine); margin: -1.1rem 0 -1.2rem; }
+.poems__item:hover { color: inherit; transform: translateY(-3px); box-shadow: 0 .75rem 1.5rem rgba(20, 26, 29, .12); }
+.poems__title { font-family: var(--display); font-size: 1.75rem; line-height: 1.1; }
+.poems__item:hover .poems__title { color: var(--accent-text); }
+.poems__line { font-family: var(--read); font-style: italic; color: var(--ink-2); font-size: 1.02rem; }
+.poems__date { font-size: .85rem; color: var(--ink-2); }
+
+/* Blog list */
+.posts { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
+.posts__item { display: grid; gap: .3rem; padding: 1.4rem 0; border-bottom: 1px solid var(--rule); text-decoration: none; }
+.posts__item:hover { color: inherit; }
+.posts__date { font-weight: 600; font-size: .8rem; letter-spacing: .16em; text-transform: uppercase; color: var(--accent-text); }
+.posts__title { font-family: var(--display); font-size: 1.9rem; line-height: 1.1; }
+.posts__item:hover .posts__title { color: var(--accent-text); }
+.posts__summary { color: var(--ink-2); max-width: 60ch; }
+.posts__about { font-size: .92rem; color: var(--ink-2); }
+
+/* Short story page: a cover at the top instead of a part numeral */
+.chapter__cover { width: 11rem; margin: 0 auto 1.25rem; transform: rotate(-2deg); }
+.chapter__cover .cover { box-shadow: .5rem .8rem 1.5rem rgba(20, 26, 29, .28); }
+.chapter__cover .cover--md .cover__title { font-size: 1.3rem; }
+.chapter__cover .cover__author, .chapter__cover .cover__pill, .chapter__cover .cover__foot { font-size: .62rem; }
+.chapter__cover .cover__pill { padding: .25rem .7rem; }
+.chapter__cover .cover__middle { padding: .6rem .8rem; gap: .35rem; }
+
+/* Poem page */
+.page-sheet--poem { max-width: 40rem; }
+.poem-mark { display: block; width: 3rem; height: .35rem; border-radius: 999px; background: var(--spine); margin: .5rem auto 1rem; }
+.poem-dedication { margin: .25rem 0 0; font-family: var(--read); font-style: italic; color: var(--ink-2); }
+.poem-epigraph { margin: 0 auto 2.5rem; max-width: 28rem; text-align: right; font-family: var(--read); font-style: italic; color: var(--ink-2); font-size: 1rem; }
+.poem-epigraph p { margin: 0 0 .3rem; }
+.poem-epigraph cite { font-style: normal; font-size: .9rem; }
+.prose--poem { width: fit-content; max-width: 100%; margin: 0 auto; font-size: 1.2rem; line-height: 1.75; }
+.prose--poem p { white-space: pre-line; margin: 0 0 1.6em; }  /* each line break you type is kept */
+.poem-date { text-align: center; margin: 2.5rem 0 0; font-size: .95rem; color: var(--ink-2); }
+.poem-date::before { content: ""; display: block; width: 2rem; height: 1px; background: var(--rule); margin: 0 auto 1.25rem; }
+
+/* Blog post page */
+.page-sheet--post { max-width: 48rem; }
+.post-head { margin-bottom: 2.25rem; display: flex; flex-direction: column; align-items: flex-start; gap: .4rem; }
+.post-head .chapter__story { margin-bottom: .75rem; }
+.post-head__title { margin: 0 0 .35rem; font-family: var(--display); font-weight: 400; font-size: clamp(2.2rem, 6vw, 3.2rem); line-height: 1.05; }
+.post-image { margin: 0 0 2.25rem; }
+.post-image img { width: 100%; height: auto; border-radius: 3px; }
+.prose--post { font-size: 1.12rem; }
+.chapter__story { text-transform: none; }
+.about-chip {
+  display: inline-flex; align-items: center; gap: .6rem; margin-top: .75rem;
+  padding: .35rem .9rem .35rem .4rem; border-radius: 999px; background: var(--ground);
+  text-decoration: none; font-weight: 500; font-size: .98rem;
+}
+.about-chip .cover { width: 1.6rem; flex: none; }
+.about-chip__label { font-weight: 600; font-size: .75rem; letter-spacing: .16em; text-transform: uppercase; color: var(--accent-text); margin-right: .25rem; }
+
+@media (prefers-color-scheme: dark) {
+  .poem-mark { background: color-mix(in srgb, var(--spine) 60%, #FFFFFF); }
+}
+
+/* Fixes after review */
+.series, .poems { grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr)); }
+.hero__sticker { top: -.9rem; right: -1rem; }
+.about-chip .cover__middle > * { display: none; }

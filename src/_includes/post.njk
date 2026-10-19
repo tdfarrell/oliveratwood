@@ -1,0 +1,58 @@
+---
+layout: base.njk
+---
+{% from "macros.njk" import aboutChip %}
+{% set about = collections.stories | storyBySlug(story) if story else null %}
+{% set older = collections.posts | olderThan(page.url) %}
+{% set newer = collections.posts | newerThan(page.url) %}
+
+<article class="wrap page-sheet page-sheet--post">
+  <header class="post-head">
+    <a class="chapter__story" href="/blog/">Blog</a>
+    <h1 class="post-head__title">{{ title }}</h1>
+    <p class="chapter__meta">
+      <time datetime="{{ page.date | isoDate }}">{{ page.date | readableDate }}</time> · {{ content | readingTime }}
+    </p>
+    {{ aboutChip(about, collections.stories) }}
+  </header>
+
+  {% if image %}
+  <figure class="post-image">
+    <img src="{{ image }}" alt="{{ imageAlt or '' }}" sizes="(max-width: 760px) 100vw, 720px">
+  </figure>
+  {% endif %}
+
+  <div class="prose prose--post">
+    {{ content | safe }}
+  </div>
+
+  {% if about %}
+  {% set aboutParts = collections.episodes | forStory(about.fileSlug) %}
+  {% if aboutParts.length %}
+  <aside class="note">
+    <span class="note__label">Read the story</span>
+    <a href="{{ aboutParts[0].url }}"><em>{{ about.data.title }}</em>, from Part 1</a>{% if aboutParts.length > 1 %}, or jump to <a href="{{ (aboutParts | last).url }}">the latest part</a>{% endif %}.
+  </aside>
+  {% endif %}
+  {% endif %}
+
+  <nav class="pager" aria-label="More posts">
+    {% if older %}
+    <a class="pager__link" href="{{ older.url }}">
+      <span class="pager__dir">← Earlier post</span>
+      <span class="pager__title">{{ older.data.title }}</span>
+    </a>
+    {% else %}<span></span>{% endif %}
+    {% if newer %}
+    <a class="pager__link pager__link--next" href="{{ newer.url }}">
+      <span class="pager__dir">Newer post →</span>
+      <span class="pager__title">{{ newer.data.title }}</span>
+    </a>
+    {% else %}
+    <a class="pager__link pager__link--next" href="/blog/">
+      <span class="pager__dir">All posts →</span>
+      <span class="pager__title">The blog</span>
+    </a>
+    {% endif %}
+  </nav>
+</article>

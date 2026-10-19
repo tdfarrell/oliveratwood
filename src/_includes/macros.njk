@@ -22,11 +22,21 @@
 {% endif %}
 {% endmacro %}
 
-{# One installment as a book spine on the shelf. #}
-{% macro spine(ep, color, tilt=false) %}
-<a class="spine{% if tilt %} spine--tilt{% endif %}" href="{{ ep.url }}"
-   style="--spine: {{ color }}; --spine-ink: {{ color | inkOn }}; height: {{ ep.url | spineHeight }}px"
-   title="{{ ep.data.title }} — Part {{ ep.data.number }}">
-  <span class="spine__text">{{ ep.data.title }} · {{ ep.data.number | roman }}</span>
+{# One book on the shelf: a serial part, a short story, or a poem (thin). #}
+{% macro spine(url, label, color, tilt=false, hover="", thin=false) %}
+<a class="spine{% if tilt %} spine--tilt{% endif %}{% if thin %} spine--thin{% endif %}" href="{{ url }}"
+   style="--spine: {{ color }}; --spine-ink: {{ color | inkOn }}; height: {{ (url | spineHeight) - (40 if thin else 0) }}px"
+   title="{{ hover or label }}">
+  <span class="spine__text">{{ label }}</span>
 </a>
+{% endmacro %}
+
+{# Small "About: Story" chip linking a blog post to the serial it discusses. #}
+{% macro aboutChip(story, stories) %}
+{% if story %}
+<a class="about-chip" href="{{ story.url }}">
+  {{ cover(story.data.title, story.data.cover, story | spineColor(stories), "sm", alt="") }}
+  <span><span class="about-chip__label">About</span> {{ story.data.title }}</span>
+</a>
+{% endif %}
 {% endmacro %}

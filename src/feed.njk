@@ -10,14 +10,29 @@ eleventyExcludeFromCollections: true
   <atom:link href="{{ site.url }}/feed.xml" rel="self" type="application/rss+xml"/>
   <description>{{ site.description }}</description>
   <language>en-us</language>
-  {% for ep in collections.latest | head(20) %}
-  {% set s = collections.stories | storyBySlug(ep.data.story) %}
+  {% for item in collections.everything | head(30) %}
+  {% set k = item.data.kind %}
+  {% if k == "episode" %}
+    {% set s = collections.stories | storyBySlug(item.data.story) %}
+    {% set itemTitle = (s.data.title if s else item.data.story) + ", Part " + item.data.number + ": " + item.data.title %}
+    {% set cat = "Serial" %}
+  {% elif k == "short" %}
+    {% set itemTitle = item.data.title + " (short story)" %}
+    {% set cat = "Short story" %}
+  {% elif k == "poem" %}
+    {% set itemTitle = item.data.title + " (poem)" %}
+    {% set cat = "Poetry" %}
+  {% else %}
+    {% set itemTitle = item.data.title %}
+    {% set cat = "Blog" %}
+  {% endif %}
   <item>
-    <title>{{ (s.data.title if s else ep.data.story) | escape }}, Part {{ ep.data.number }}: {{ ep.data.title | escape }}</title>
-    <link>{{ ep.url | absoluteUrl(site.url) }}</link>
-    <guid>{{ ep.url | absoluteUrl(site.url) }}</guid>
-    <pubDate>{{ ep.date | rfcDate }}</pubDate>
-    <description>{{ ep.content | escape }}</description>
+    <title>{{ itemTitle | escape }}</title>
+    <link>{{ item.url | absoluteUrl(site.url) }}</link>
+    <guid>{{ item.url | absoluteUrl(site.url) }}</guid>
+    <pubDate>{{ item.date | rfcDate }}</pubDate>
+    <category>{{ cat }}</category>
+    <description>{{ item.content | escape }}</description>
   </item>
   {% endfor %}
 </channel>

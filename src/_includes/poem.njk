@@ -1,0 +1,53 @@
+---
+layout: base.njk
+bodyClass: reading
+---
+{% set color = collections.poems | storyBySlug(page.fileSlug) | pieceColor(collections.poems, 4) %}
+{% set older = collections.poems | olderThan(page.url) %}
+{% set newer = collections.poems | newerThan(page.url) %}
+
+<article class="wrap page-sheet page-sheet--poem" style="--spine: {{ color }}; --spine-ink: {{ color | inkOn }}">
+  <header class="chapter">
+    <a class="chapter__story" href="/poetry/">Poetry</a>
+    <span class="poem-mark" aria-hidden="true"></span>
+    <h1 class="chapter__title">{{ title }}</h1>
+    {% if dedication %}<p class="poem-dedication">{{ dedication }}</p>{% endif %}
+  </header>
+
+  {% if epigraph %}
+  <blockquote class="poem-epigraph">
+    <p>{{ epigraph }}</p>
+    {% if epigraphSource %}<cite>— {{ epigraphSource }}</cite>{% endif %}
+  </blockquote>
+  {% endif %}
+
+  <div class="prose prose--poem">
+    {{ content | safe }}
+  </div>
+
+  <p class="poem-date"><time datetime="{{ page.date | isoDate }}">{{ page.date | readableDate }}</time></p>
+
+  {% if authorNote %}
+  <aside class="note"><span class="note__label">A note from Oliver</span> {{ authorNote }}</aside>
+  {% endif %}
+
+  <nav class="pager" aria-label="More poems">
+    {% if older %}
+    <a class="pager__link" href="{{ older.url }}">
+      <span class="pager__dir">← Earlier poem</span>
+      <span class="pager__title">{{ older.data.title }}</span>
+    </a>
+    {% else %}<span></span>{% endif %}
+    {% if newer %}
+    <a class="pager__link pager__link--next" href="{{ newer.url }}">
+      <span class="pager__dir">Newer poem →</span>
+      <span class="pager__title">{{ newer.data.title }}</span>
+    </a>
+    {% else %}
+    <a class="pager__link pager__link--next" href="/poetry/">
+      <span class="pager__dir">All poetry →</span>
+      <span class="pager__title">The collection</span>
+    </a>
+    {% endif %}
+  </nav>
+</article>

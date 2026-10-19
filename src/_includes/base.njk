@@ -8,7 +8,7 @@
   <meta name="description" content="{{ summary or site.description }}">
   <meta property="og:title" content="{{ title or site.title }}">
   <meta property="og:description" content="{{ summary or site.description }}">
-  <meta property="og:type" content="{{ 'article' if layout == 'episode.njk' else 'website' }}">
+  <meta property="og:type" content="{{ 'article' if kind else 'website' }}">
   <meta property="og:url" content="{{ page.url | absoluteUrl(site.url) }}">
   {% if ogImage %}<meta property="og:image" content="{{ ogImage | absoluteUrl(site.url) }}">{% endif %}
   <link rel="canonical" href="{{ page.url | absoluteUrl(site.url) }}">
@@ -27,9 +27,11 @@
       <span class="brand__name">{{ site.title }}</span>
     </a>
     <nav class="nav" aria-label="Main">
-      <a href="/stories/" {% if page.url | inSection('/stories/') %}aria-current="page"{% endif %}>Stories</a>
+      {% if collections.stories.length %}<a href="/stories/" {% if page.url | inSection('/stories/') %}aria-current="page"{% endif %}>Serials</a>{% endif %}
+      {% if collections.shorts.length %}<a href="/short-stories/" {% if page.url | inSection('/short-stories/') %}aria-current="page"{% endif %}>Short Stories</a>{% endif %}
+      {% if collections.poems.length %}<a href="/poetry/" {% if page.url | inSection('/poetry/') %}aria-current="page"{% endif %}>Poetry</a>{% endif %}
+      {% if collections.posts.length %}<a href="/blog/" {% if page.url | inSection('/blog/') %}aria-current="page"{% endif %}>Blog</a>{% endif %}
       <a href="/about/" {% if page.url == '/about/' %}aria-current="page"{% endif %}>About</a>
-      <a href="/feed.xml">RSS</a>
     </nav>
   </header>
 
@@ -40,14 +42,14 @@
   <footer class="footer wrap">
     <div class="footer__cta">
       {% if site.newsletterUrl %}
-      <p class="footer__line">New parts, delivered by post. Well, email.</p>
+      <p class="footer__line">New writing, delivered by post. Well, email.</p>
       <a class="btn btn--accent" href="{{ site.newsletterUrl }}">Subscribe</a>
       {% else %}
-      <p class="footer__line">New parts, delivered to your feed reader.</p>
+      <p class="footer__line">New writing, delivered to your feed reader.</p>
       <a class="btn btn--accent" href="/feed.xml">Follow by RSS</a>
       {% endif %}
     </div>
-    <p class="footer__small">&copy; {% year %} {{ site.author }}. All stories are works of fiction.</p>
+    <p class="footer__small">&copy; {% year %} {{ site.author }}. Stories and poems are works of fiction. · <a href="/feed.xml">RSS feed</a></p>
   </footer>
 </body>
 </html>

@@ -1,0 +1,13 @@
+<ul class="posts">
+  {% for p in postList %}
+  {% set about = collections.stories | storyBySlug(p.data.story) if p.data.story else null %}
+  <li>
+    <a class="posts__item" href="{{ p.url }}">
+      <time class="posts__date" datetime="{{ p.date | isoDate }}">{{ p.date | readableDate }}</time>
+      <span class="posts__title">{{ p.data.title }}</span>
+      <span class="posts__summary">{{ p.data.summary or (p.content | excerpt(30)) }}</span>
+      {% if about %}<span class="posts__about">About <em>{{ about.data.title }}</em></span>{% endif %}
+    </a>
+  </li>
+  {% endfor %}
+</ul>

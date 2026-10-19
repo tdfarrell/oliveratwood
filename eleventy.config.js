@@ -27,19 +27,88 @@ export default function (eleventyConfig) {
     if (data.draft) return false;
   });
 
+  const byDateDesc = (a, b) => b.date - a.date;
+
+  // Serials and their installments
   eleventyConfig.addCollection("episodes", (api) =>
     api.getFilteredByGlob("src/episodes/*.md").sort((a, b) => a.data.number - b.data.number)
   );
-
   eleventyConfig.addCollection("latest", (api) =>
-    api.getFilteredByGlob("src/episodes/*.md").sort((a, b) => b.date - a.date)
+    api.getFilteredByGlob("src/episodes/*.md").sort(byDateDesc)
   );
-
   eleventyConfig.addCollection("stories", (api) =>
     api
       .getFilteredByGlob("src/stories/*.md")
       .sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99))
   );
+
+  // Stand-alone pieces and the blog, newest first
+  eleventyConfig.addCollection("shorts", (api) =>
+    api.getFilteredByGlob("src/short-stories/*.md").sort(byDateDesc)
+  );
+  eleventyConfig.addCollection("poems", (api) =>
+    api.getFilteredByGlob("src/poetry/*.md").sort(byDateDesc)
+  );
+  eleventyConfig.addCollection("posts", (api) =>
+    api.getFilteredByGlob("src/blog/*.md").sort(byDateDesc)
+  );
+
+  // All fiction (serial parts, short stories, poems), newest first: drives the featured cover
+  eleventyConfig.addCollection("fiction", (api) =>
+    api
+      .getFilteredByGlob(["src/episodes/*.md", "src/short-stories/*.md", "src/poetry/*.md"])
+      .sort(byDateDesc)
+  );
+
+  // Everything for the RSS feed
+  eleventyConfig.addCollection("everything", (api) =>
+    api
+      .getFilteredByGlob(["src/episodes/*.md", "src/short-stories/*.md", "src/poetry/*.md", "src/blog/*.md"])
+      .sort(byDateDesc)
+  );
+
+  // Previous (older) and next (newer) pieces within a date-sorted list
+  eleventyConfig.addFilter("olderThan", (list, url) => {
+    const i = (list || []).findIndex((x) => x.url === url);
+    return i >= 0 ? list[i + 1] : undefined;
+  });
+  eleventyConfig.addFilter("newerThan", (list, url) => {
+    const i = (list || []).findIndex((x) => x.url === url);
+    return i > 0 ? list[i - 1] : undefined;
+  });
+
+  // Serials that have at least one published part
+  eleventyConfig.addFilter("withParts", (stories, episodes) =>
+    (stories || []).filter((s) => (episodes || []).some((e) => e.data.story === s.fileSlug))
+  );
+
+  // Blog posts that are about a given serial
+  eleventyConfig.addFilter("postsAbout", (posts, slug) =>
+    (posts || []).filter((p) => p.data.story && p.data.story === slug)
+  );
+
+  // Color for a stand-alone piece: its own spine color, else one from the palette
+  eleventyConfig.addFilter("pieceColor", (item, list, offset = 0) => {
+    if (item?.data?.spine) return item.data.spine;
+    const i = Math.max(0, (list || []).findIndex((x) => x.url === item?.url));
+    return SPINE_PALETTE[(i + offset) % SPINE_PALETTE.length];
+  });
+
+  // A short plain-text preview from a piece's text
+  eleventyConfig.addFilter("excerpt", (content, words = 30) => {
+    const text = String(content || "")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/&[a-z#0-9]+;/gi, " ")
+      .split(/\s+/)
+      .filter(Boolean);
+    return text.slice(0, words).join(" ") + (text.length > words ? "…" : "");
+  });
+
+  // The first line of a poem
+  eleventyConfig.addFilter("firstLine", (content) => {
+    const firstPara = (String(content || "").match(/<p>([\s\S]*?)<\/p>/) || [])[1] || "";
+    return firstPara.split(/\n|<br\s*\/?>/)[0].replace(/<[^>]+>/g, "").trim();
+  });
 
   eleventyConfig.addFilter("forStory", (episodes, slug) =>
     (episodes || []).filter((e) => e.data.story === slug)

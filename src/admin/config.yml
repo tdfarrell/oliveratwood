@@ -25,7 +25,7 @@ slug:
 
 collections:
   - name: episodes
-    label: Episodes
+    label: Serial Episodes
     label_singular: Episode
     description: One installment of a serial. Turn on "Draft" to save without publishing.
     folder: src/episodes
@@ -47,7 +47,7 @@ collections:
         field: draft
         pattern: true
     fields:
-      - label: Story
+      - label: Serial
         name: story
         widget: relation
         collection: stories
@@ -100,9 +100,9 @@ collections:
         hint: Optional note shown after the installment.
 
   - name: stories
-    label: Stories
-    label_singular: Story
-    description: Each serial. Its contents page lists every published installment.
+    label: Serials
+    label_singular: Serial
+    description: Each serial story. Its contents page lists every published episode.
     folder: src/stories
     create: true
     extension: md
@@ -157,6 +157,205 @@ collections:
         name: body
         widget: markdown
         required: false
+
+  - name: shorts
+    label: Short Stories
+    label_singular: Short Story
+    description: Complete, stand-alone stories (no installments). Turn on "Draft" to save without publishing.
+    folder: src/short-stories
+    create: true
+    extension: md
+    format: frontmatter
+    slug: "{{slug}}"
+    summary: "{{title}} — {{date}} {{draft}}"
+    sortable_fields:
+      fields: [date, title]
+      default:
+        field: date
+        direction: descending
+    view_filters:
+      - label: Drafts
+        field: draft
+        pattern: true
+    fields:
+      - label: Title
+        name: title
+        widget: string
+      - label: Publish date
+        name: date
+        widget: datetime
+        time_format: false
+        format: YYYY-MM-DD
+      - label: Draft
+        name: draft
+        widget: boolean
+        default: false
+        required: false
+        hint: When on, this story is saved but hidden from the site.
+      - label: One-line teaser
+        name: summary
+        widget: string
+        required: false
+        hint: Shown on the home page, story lists and link previews. If empty, the opening lines are used.
+      - label: Cover image
+        name: cover
+        widget: image
+        required: false
+        hint: Optional. Tall 2:3 images work best (about 1200 × 1800). Leave empty and the site draws a banded cover.
+      - label: Spine color
+        name: spine
+        widget: color
+        required: false
+        hint: Optional. Color for this story's spine on the shelf and its drawn cover.
+      - label: Genre
+        name: genre
+        widget: string
+        required: false
+        hint: e.g. Micro-Fiction, Mystery, Literary
+      - label: Story text
+        name: body
+        widget: markdown
+        hint: Use a line with three dashes (---) for a scene break.
+      - label: Note from Oliver
+        name: authorNote
+        widget: text
+        required: false
+        hint: Optional note shown after the story.
+
+  - name: poems
+    label: Poetry
+    label_singular: Poem
+    description: Poems. Type them exactly as you want them to appear; every line break is kept.
+    folder: src/poetry
+    create: true
+    extension: md
+    format: frontmatter
+    slug: "{{slug}}"
+    summary: "{{title}} — {{date}} {{draft}}"
+    sortable_fields:
+      fields: [date, title]
+      default:
+        field: date
+        direction: descending
+    view_filters:
+      - label: Drafts
+        field: draft
+        pattern: true
+    fields:
+      - label: Title
+        name: title
+        widget: string
+      - label: Publish date
+        name: date
+        widget: datetime
+        time_format: false
+        format: YYYY-MM-DD
+      - label: Draft
+        name: draft
+        widget: boolean
+        default: false
+        required: false
+        hint: When on, this poem is saved but hidden from the site.
+      - label: Dedication
+        name: dedication
+        widget: string
+        required: false
+        hint: Optional, e.g. "for my father". Shown under the title.
+      - label: Epigraph
+        name: epigraph
+        widget: text
+        required: false
+        hint: Optional quotation shown above the poem.
+      - label: Epigraph source
+        name: epigraphSource
+        widget: string
+        required: false
+      - label: Poem
+        name: body
+        widget: text
+        hint: Each line on its own line. Leave a blank line between stanzas.
+      - label: Preview line
+        name: summary
+        widget: string
+        required: false
+        hint: Optional. Shown in lists and link previews. If empty, the poem's first line is used.
+      - label: Spine color
+        name: spine
+        widget: color
+        required: false
+        hint: Optional. Color for this poem's slim volume on the shelf.
+      - label: Cover image
+        name: cover
+        widget: image
+        required: false
+        hint: Optional. Used on the home page when this is the newest piece, and in link previews.
+      - label: Note from Oliver
+        name: authorNote
+        widget: text
+        required: false
+        hint: Optional note shown after the poem.
+
+  - name: posts
+    label: Blog
+    label_singular: Blog Post
+    description: Blog posts — news, notes on writing, or behind-the-scenes on a story. Turn on "Draft" to save without publishing.
+    folder: src/blog
+    create: true
+    extension: md
+    format: frontmatter
+    slug: "{{slug}}"
+    summary: "{{title}} — {{date}} {{draft}}"
+    sortable_fields:
+      fields: [date, title]
+      default:
+        field: date
+        direction: descending
+    view_filters:
+      - label: Drafts
+        field: draft
+        pattern: true
+    fields:
+      - label: Title
+        name: title
+        widget: string
+      - label: Publish date
+        name: date
+        widget: datetime
+        time_format: false
+        format: YYYY-MM-DD
+      - label: Draft
+        name: draft
+        widget: boolean
+        default: false
+        required: false
+        hint: When on, this post is saved but hidden from the site.
+      - label: About a serial
+        name: story
+        widget: relation
+        collection: stories
+        value_field: "{{slug}}"
+        search_fields: [title]
+        display_fields: [title]
+        required: false
+        hint: Optional. Pick a serial if this post is about it. The post will link to the story and appear on the story's page.
+      - label: Summary
+        name: summary
+        widget: string
+        required: false
+        hint: One line for the blog list and link previews. If empty, the opening words are used.
+      - label: Header image
+        name: image
+        widget: image
+        required: false
+        hint: Optional image shown at the top of the post.
+      - label: Header image description
+        name: imageAlt
+        widget: string
+        required: false
+        hint: A few words describing the image, for readers using screen readers.
+      - label: Post
+        name: body
+        widget: markdown
 
   - name: pages
     label: Pages & Settings
