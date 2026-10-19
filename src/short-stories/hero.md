@@ -5,7 +5,7 @@ draft: false
 summary: ''
 cover: ''
 spine: '#9b1212'
-genre: ''
+genre: Micro-Fiction
 authorNote: ''
 ---
 
