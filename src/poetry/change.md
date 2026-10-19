@@ -1,6 +1,6 @@
 ---
 title: Change
-date: 2026-10-19
+date: 2026-10-18
 draft: false
 dedication: ''
 epigraph: ''
